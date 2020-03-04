@@ -12,7 +12,7 @@ from time import sleep
 
 parser = argparse.ArgumentParser(description='Connect to AirServer')
 parser.add_argument('ip', metavar='IP-address', help='IP address of server')
-parser.add_argument('-p', dest='port', metavar='port', type=int, default=5000, help='port (default:5000)')
+parser.add_argument('-p', dest='port', metavar='port', type=int, default=7000, help='port (default:7000)')
 
 args = parser.parse_args()
 
@@ -37,12 +37,7 @@ f1 = hex(int(plist['features'])).upper()
 f2 = hex(int(plist['displays'][0]['features'])).upper()
 
 # TODO mac genegated plist is not being decoded properly!
-# pi key it sometimes missing and looks like a uuid
-# guessing it's an id for the screen
-# if 'pi' in plist:
-#     pivalue = plist['pi']
-# else:
-#     pivalue = plist['displays'][0]['uuid']
+# pi key it sometimes missing
 
 params = {
     'deviceid':plist['deviceID'],
@@ -63,6 +58,13 @@ info = ServiceInfo(
         properties=params,
 )
 
+infoGC = ServiceInfo(
+        type_="_googlecast._tcp.local.",
+        name="{name}._googlecast._tcp.local.".format(**plist),
+        addresses=[socket.inet_aton(ip)],
+        port=8009,
+        properties=params,
+)
 print(info)
 
 zeroconf = Zeroconf(ip_version=IPVersion.V4Only)
