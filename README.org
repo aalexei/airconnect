@@ -1,0 +1,20 @@
+#+TITLE:   AirConnect
+#+DATE:    March 4, 2020
+
+* Description
+
+Create a local Bonjour proxy advertisement for an [[https://www.airserver.com][AirServer]] instance on another machine. Allows a mac to share it's screen on AirServer using Airplay.
+
+* Usage
+
+Find the IP address and port of the AirServer by scanning a QR code. Then in a terminal
+
+#+BEGIN_SRC python
+air_connect.py [-p port] IP-address
+#+END_SRC
+
+The AirServer should appear in the Airplay menu, where you can connect as normal.
+
+* Prerequisites
+- Python 3
+- [[https://github.com/jstasiak/python-zeroconf][zeroconf]] module
