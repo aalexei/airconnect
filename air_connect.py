@@ -31,46 +31,40 @@ plist = plistlib.loads(pl)
 # pprint.pprint(plist)
 # print()
 
-# pi key it sometimes missing and looks like a uuid
-# guessing it's an id for the screen
-if 'pi' in plist:
-    pivalue = plist['pi']
-else:
-    pivalue = plist['displays'][0]['uuid']
-
 
 # features seems to be hex of 'features' int in displays and general
-f1 = hex(int(plist['displays'][0]['features'])).upper()
-f2 = hex(int(plist['features'])).upper()
+f1 = hex(int(plist['features'])).upper()
+f2 = hex(int(plist['displays'][0]['features'])).upper()
 
 # TODO mac genegated plist is not being decoded properly!
-
+# pi key it sometimes missing and looks like a uuid
+# guessing it's an id for the screen
+# if 'pi' in plist:
+#     pivalue = plist['pi']
+# else:
+#     pivalue = plist['displays'][0]['uuid']
 
 params = {
+    #'deviceid':'38:C9:86:3F:AF:B5',
     'deviceid':plist['deviceID'],
-    'flags':hex(plist['statusFlags']),
+    #'flags':'0x4',
+    'flags':hex(plist['statusFlags']), # used?
+    #'model':'AppleTV5,3',
     'model':plist['model'],
-    'pk':plist['pk'],
-    'pi':pivalue,
+    'pk':plist['pk'], # used?
+    'pi':plist['pi'], # used?
+    #'pi':'1FC82B97-F4ED-43CB-AE17-03C8F4D6108F',
+    #'pk':'d3a29c415d4b2c3aa68c043dcd7ed880c7f702313ae05044772e743076fb5acc',
+    #'srcvers':'220.68',
     'srcvers':plist['sourceVersion'],
-    'vv':plist['vv'],
-    'features':'{},{}'.format(f1,f2),
+    #'vv':'2',
+    'vv':plist['vv'], # used?
+    #'features':'0x4A7FFFF7,0xE',
+    'features':'{},{}'.format(f1,f2), # order matters
 }
 
-print(plist['name'])
-print(params)
-
-# following parameters work
-params = {
-    'deviceid':'38:C9:86:3F:AF:B5',
-    'flags':'0x4',
-    'model':'AppleTV5,3',
-    'pi':'1FC82B97-F4ED-43CB-AE17-03C8F4D6108F',
-    'pk':'d3a29c415d4b2c3aa68c043dcd7ed880c7f702313ae05044772e743076fb5acc',
-    'srcvers':'220.68',
-    'vv':'2',
-    'features':'0x4A7FFFF7,0xE',
-}
+#print(plist['name'])
+#print(params)
 
 info = ServiceInfo(
         type_="_airplay._tcp.local.",
@@ -80,6 +74,8 @@ info = ServiceInfo(
         properties=params,
         #server="{name}.local.".format(**plist),
     )
+
+print(info)
 
 zeroconf = Zeroconf(ip_version=IPVersion.V4Only)
 print("Registration of a service, press Ctrl-C to exit...")
