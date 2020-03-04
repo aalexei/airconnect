@@ -45,26 +45,15 @@ f2 = hex(int(plist['displays'][0]['features'])).upper()
 #     pivalue = plist['displays'][0]['uuid']
 
 params = {
-    #'deviceid':'38:C9:86:3F:AF:B5',
     'deviceid':plist['deviceID'],
-    #'flags':'0x4',
     'flags':hex(plist['statusFlags']), # used?
-    #'model':'AppleTV5,3',
     'model':plist['model'],
     'pk':plist['pk'], # used?
     'pi':plist['pi'], # used?
-    #'pi':'1FC82B97-F4ED-43CB-AE17-03C8F4D6108F',
-    #'pk':'d3a29c415d4b2c3aa68c043dcd7ed880c7f702313ae05044772e743076fb5acc',
-    #'srcvers':'220.68',
     'srcvers':plist['sourceVersion'],
-    #'vv':'2',
     'vv':plist['vv'], # used?
-    #'features':'0x4A7FFFF7,0xE',
     'features':'{},{}'.format(f1,f2), # order matters
 }
-
-#print(plist['name'])
-#print(params)
 
 info = ServiceInfo(
         type_="_airplay._tcp.local.",
@@ -72,8 +61,7 @@ info = ServiceInfo(
         addresses=[socket.inet_aton(ip)],
         port=port,
         properties=params,
-        #server="{name}.local.".format(**plist),
-    )
+)
 
 print(info)
 
