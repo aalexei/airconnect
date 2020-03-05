@@ -5,7 +5,7 @@ import plistlib
 import urllib.request
 import urllib.parse
 import pprint
-from zeroconf import ServiceBrowser, Zeroconf, IPVersion, ServiceInfo
+from zeroconf import ServiceBrowser, Zeroconf, ServiceInfo
 import socket
 from time import sleep
 
@@ -44,13 +44,15 @@ params = {
     'flags':hex(plist['statusFlags']), # used?
     'model':plist['model'],
     'pk':plist['pk'], # used?
-    'pi':plist['pi'], # used?
     'srcvers':plist['sourceVersion'],
     'vv':plist['vv'], # used?
     'features':'{},{}'.format(f1,f2), # order matters
 }
 
-info = ServiceInfo(
+if 'pi' in plist:
+    params['pi'] = plist['pi']
+
+infoAP = ServiceInfo(
         type_="_airplay._tcp.local.",
         name="{name}._airplay._tcp.local.".format(**plist),
         addresses=[socket.inet_aton(ip)],
@@ -62,14 +64,15 @@ infoGC = ServiceInfo(
         type_="_googlecast._tcp.local.",
         name="{name}._googlecast._tcp.local.".format(**plist),
         addresses=[socket.inet_aton(ip)],
-        port=8009,
-        properties=params,
+        port=8008,
+        #properties=params,
 )
-print(info)
+print(infoAP, infoGC)
 
-zeroconf = Zeroconf(ip_version=IPVersion.V4Only)
+zeroconf = Zeroconf()
+zeroconf.register_service(infoAP)
+zeroconf.register_service(infoGC)
 print("Registration of a service, press Ctrl-C to exit...")
-zeroconf.register_service(info)
 try:
     while True:
         sleep(0.1)
@@ -77,5 +80,6 @@ except KeyboardInterrupt:
     pass
 finally:
     print("Unregistering...")
-    zeroconf.unregister_service(info)
+    zeroconf.unregister_service(infoAP)
+    zeroconf.unregister_service(infoGC)
     zeroconf.close()
