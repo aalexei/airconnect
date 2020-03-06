@@ -8,7 +8,7 @@ import pprint
 from zeroconf import ServiceBrowser, Zeroconf, ServiceInfo
 import socket
 from time import sleep
-
+import json
 
 parser = argparse.ArgumentParser(description='Connect to AirServer')
 parser.add_argument('ip', metavar='IP-address', help='IP address of server')
@@ -27,6 +27,17 @@ with urllib.request.urlopen(url) as f:
 # response is Apple binary list
 plist = plistlib.loads(pl)
 
+#urlGC = 'http://{}:8008/ssdp/device-desc.xml'.format(ip)
+#urlGC = 'http://{}:8008/setup/eureka_info?options=detail'.format(ip)
+urlGC = 'http://{}:8008/setup/eureka_info'.format(ip)
+
+with urllib.request.urlopen(urlGC) as f:
+    info_json = f.read()
+
+info_gc = json.loads(info_json)
+print(info_gc)
+print()
+
 # XXX
 # pprint.pprint(plist)
 # print()
@@ -39,7 +50,7 @@ f2 = hex(int(plist['displays'][0]['features'])).upper()
 # TODO mac genegated plist is not being decoded properly!
 # pi key it sometimes missing
 
-params = {
+paramsAP = {
     'deviceid':plist['deviceID'],
     'flags':hex(plist['statusFlags']), # used?
     'model':plist['model'],
@@ -50,24 +61,37 @@ params = {
 }
 
 if 'pi' in plist:
-    params['pi'] = plist['pi']
+    paramsAP['pi'] = plist['pi']
 
 infoAP = ServiceInfo(
         type_="_airplay._tcp.local.",
         name="{name}._airplay._tcp.local.".format(**plist),
         addresses=[socket.inet_aton(ip)],
         port=port,
-        properties=params,
+        properties=paramsAP,
 )
+
+paramsGC = {
+    'id':info_gc['ssdp_udn'],
+    'fn':info_gc['name'],
+    #'md':'Chromcast Ultra',
+    #'st':0,
+    #'ve':'05',
+    #'ca':4101,
+    'bs':info_gc['hotspot_bssid'],
+    #'rm':'',
+    #'rs':'',
+}
 
 infoGC = ServiceInfo(
         type_="_googlecast._tcp.local.",
         name="{name}._googlecast._tcp.local.".format(**plist),
         addresses=[socket.inet_aton(ip)],
-        port=8008,
-        #properties=params,
+        port=8009,
+        properties=paramsGC,
 )
-print(infoAP, infoGC)
+print(infoAP)
+print(infoGC)
 
 zeroconf = Zeroconf()
 zeroconf.register_service(infoAP)
