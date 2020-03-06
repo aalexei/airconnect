@@ -72,15 +72,15 @@ infoAP = ServiceInfo(
 )
 
 paramsGC = {
-    'id':info_gc['ssdp_udn'],
     'fn':info_gc['name'],
-    #'md':'Chromcast Ultra',
-    #'st':0,
-    #'ve':'05',
-    #'ca':4101,
-    'bs':info_gc['hotspot_bssid'],
-    #'rm':'',
-    #'rs':'',
+    'id':info_gc['ssdp_udn'],#.replace('-',''),
+    'bs':info_gc['hotspot_bssid'],#.replace(':',''),
+    'md':'Chromcast Ultra',
+    'st':'0',
+    've':'05',
+    'ca': '4101',
+    'rm':'',
+    'rs':'',
 }
 
 infoGC = ServiceInfo(
