@@ -73,14 +73,14 @@ infoAP = ServiceInfo(
 
 paramsGC = {
     'fn':info_gc['name'],
-    'id':info_gc['ssdp_udn'],#.replace('-',''),
-    'bs':info_gc['hotspot_bssid'],#.replace(':',''),
-    'md':'Chromcast Ultra',
-    'st':'0',
-    've':'05',
-    'ca': '4101',
-    'rm':'',
-    'rs':'',
+    'id':info_gc['ssdp_udn'], # no dashes?
+    'bs':info_gc['hotspot_bssid'],
+    'ca': '4101', # capabilities? (not required?)
+    'md':'Chromcast Ultra', # The devide model type (not required?)
+    'st':'0', # ? (not required?)
+    've':'05', # Version of protocol (not required?)
+    'rm':'',  # ? (not required?)
+    'rs':'', # ? (not required?)
 }
 
 infoGC = ServiceInfo(
